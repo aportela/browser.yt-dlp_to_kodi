@@ -5,7 +5,8 @@
       <button @click="openOptions">Open settings</button>
     </div>
     <ul>
-      <li v-for="(server, idx) in servers" :key="server.id">{{ server.name }}</li>
+      <li v-for="(server, idx) in servers" :key="server.id">{{ server.name }} <button type="button"
+          @click="sendToServer(server)">send</button></li>
     </ul>
   </div>
 </template>
@@ -19,10 +20,9 @@ export default {
   },
   mounted() {
     browser.storage.local.get('servers').then(data => {
-      this.servers = data.servers || [];
-      console.log(this.servers.length);
-      console.log(this.servers[0]);
+      this.servers = data.servers ? JSON.parse(data.servers) : [];
     });
+
   },
   methods: {
     openOptions() {
@@ -31,6 +31,9 @@ export default {
       } else {
         window.open(browser.runtime.getURL("options.html"));
       }
+    },
+    sendToServer(server) {
+      console.log(server);
     }
   }
 };

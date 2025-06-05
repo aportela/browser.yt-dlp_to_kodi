@@ -19,7 +19,8 @@
           <th>{{ server.port }}</th>
           <th>{{ server.username }}</th>
           <th>{{ server.password }}</th>
-          <th><button type="button" @click.prevent="removeServerAtIndex(idx)">x</button></th>
+          <th><button type="button" @click.prevent="editServerAtIndex(idx)">edit</button><button type="button"
+              @click.prevent="removeServerAtIndex(idx)">remove</button></th>
         </tr>
       </tbody>
     </table>
@@ -54,7 +55,7 @@
 
     <p class="form-row">
       <label for="password">Password:</label>
-      <input type="password" id="password" v-model="newServer.password" placeholder="leave empty if no auth required" />
+      <input type="text" id="password" v-model="newServer.password" placeholder="leave empty if no auth required" />
     </p>
 
     <div class="button-group">
@@ -70,7 +71,7 @@ export default {
     return {
       testOK: false,
       newServer: {
-        id: Date.now(),
+        id: null,
         name: null,
         protocol: 'http://',
         host: null,
@@ -84,6 +85,12 @@ export default {
   mounted() {
     const style = document.createElement('style');
     style.textContent = `
+
+table {
+  width: 100%;
+  border: 2px solid #222;
+}
+
 div#wrapper {
   background-color: whitesmoke;
   list-style-type: none;
@@ -94,14 +101,14 @@ div#wrapper {
 .form-row {
   display: flex;
   justify-content: flex-end;
-  padding: .5em;
+  padding: 0em .5em;
 }
 
 .form-row>label {
   padding: .5em 1em .5em 0;
   flex: 1;
   font-weight: bold;
-  font-size: 1.5em;
+  font-size: 1.2em;
 }
 
 .form-row>input,
@@ -147,7 +154,7 @@ div#wrapper {
       `;
     document.head.appendChild(style);
     browser.storage.local.get('servers').then(data => {
-      this.servers = data.servers || [];
+      this.servers = data.servers ? JSON.parse(data.servers) : [];
     });
   },
   computed: {
@@ -170,22 +177,28 @@ div#wrapper {
       this.testOK = true;
     },
     save() {
-      this.servers.push({
-        id: this.newServer.id,
-        name: this.newServer.name,
-        protocol: this.newServer.protocol,
-        host: this.newServer.host,
-        port: this.newServer.port,
-        username: this.newServer.username || null,
-        password: this.newServer.password || null
-      });
+      if (!this.newServer.id) {
+        this.servers.push({
+          id: Date.now(),
+          name: this.newServer.name,
+          protocol: this.newServer.protocol,
+          host: this.newServer.host,
+          port: this.newServer.port,
+          username: this.newServer.username || null,
+          password: this.newServer.password || null
+        });
+      } else {
+        this.servers = this.servers.map((server) =>
+          server.id === this.newServer.id ? { ... this.newServer } : server
+        );
+      }
       this.saveToStorage();
       this.testOK = false;
     },
     saveToStorage() {
-      browser.storage.local.set({ servers: this.servers });
+      browser.storage.local.set({ servers: JSON.stringify(this.servers) });
       this.newServer = {
-        id: Date.now(),
+        id: null,
         name: null,
         protocol: 'http://',
         host: null,
@@ -193,6 +206,9 @@ div#wrapper {
         username: null,
         password: null
       };
+    },
+    editServerAtIndex(index) {
+      this.newServer = { ...this.servers[index] };
     },
     removeServerAtIndex(index) {
       this.servers.splice(index, 1);
