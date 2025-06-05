@@ -33,8 +33,49 @@ export default {
       }
     },
     sendToServer(server) {
-      console.log(server);
+      browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+        const tab = tabs[0];
+        // TODO: server protocol
+        const kodiUrl = `http://${server.host}:${server.port}/jsonrpc`;
+        const payload = {
+          method: "Addons.ExecuteAddon",
+          params: {
+            addonid: "plugin.video.yt-dlp_to_kodi",
+            params: {
+              action: "process",
+              url: tab.url,
+            },
+          },
+          id: 1,
+          jsonrpc: "2.0",
+        };
+        const headers = {
+          "Content-Type": "application/json",
+        };
+        if (server.username && server.password) {
+          headers["Authorization"] = "Basic " + btoa(`${server.username}:${server.password}`);
+        }
+        fetch(kodiUrl, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(payload),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(
+                `Error connecting Kodi: ${response.statusText}`
+              );
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.debug("Kodi response:", data);
+          })
+          .catch((error) => {
+            console.error("Error connecting Kodi:", error);
+          });
+      });
     }
   }
-};
+}
 </script>

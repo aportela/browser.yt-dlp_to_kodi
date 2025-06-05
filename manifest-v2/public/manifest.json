@@ -14,5 +14,5 @@
   "icons": {
     "48": "icon.png"
   },
-  "permissions": ["storage"]
+  "permissions": ["tabs", "storage", "http://*/", "https://*/"]
 }
