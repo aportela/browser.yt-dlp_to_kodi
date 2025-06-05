@@ -5,7 +5,7 @@
       <button @click="openOptions">Open settings</button>
     </div>
     <ul>
-      <li v-for="server in servers" :key="server.id">{{ server.name }}</li>
+      <li v-for="(server, idx) in servers" :key="server.id">{{ server.name }}</li>
     </ul>
   </div>
 </template>
@@ -14,17 +14,15 @@
 export default {
   data() {
     return {
-      servers: [
-        {
-          id: 1,
-          name: "server 1"
-        },
-        {
-          id: 2,
-          name: "server 2"
-        }
-      ]
+      servers: []
     };
+  },
+  mounted() {
+    browser.storage.local.get('servers').then(data => {
+      this.servers = data.servers || [];
+      console.log(this.servers.length);
+      console.log(this.servers[0]);
+    });
   },
   methods: {
     openOptions() {
