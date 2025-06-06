@@ -2,12 +2,17 @@
   <div>
     <div>
       <h1>yt-dlp to kodi</h1>
-      <button @click="openSettings">Open settings</button>
+      <p>
+        <button id="open_settings_btn" @click="openSettings">Open settings</button>
+      </p>
     </div>
-    <ul>
-      <li v-for="(server, idx) in servers" :key="server.id">{{ server.name }} <button type="button"
-          @click="sendToServer(server)">send</button></li>
-    </ul>
+    <div v-if="servers && servers.length > 0">
+      <hr />
+      <p v-for="(server, idx) in servers" :key="server.id">
+        <button type="button" @click="sendToServer(server)" :disabled="loading">▶️</button> <span>{{ server.name
+        }}</span>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -16,6 +21,7 @@
 import { ref, onMounted } from 'vue'
 
 const servers = ref([]);
+const loading = ref(false);
 
 onMounted(() => {
   browser.storage.local.get('servers').then(data => {
@@ -55,6 +61,7 @@ const sendToServer = (server) => {
     if (server.username && server.password) {
       headers["Authorization"] = "Basic " + btoa(`${server.username}:${server.password}`);
     }
+    loading.value = true;
     fetch(kodiUrl, {
       method: "POST",
       headers: headers,
@@ -69,9 +76,11 @@ const sendToServer = (server) => {
         return response.json();
       })
       .then((data) => {
+        loading.value = false;
         console.debug("Kodi response:", data);
       })
       .catch((error) => {
+        loading.value = false;
         console.error("Error connecting Kodi:", error);
       });
   });
