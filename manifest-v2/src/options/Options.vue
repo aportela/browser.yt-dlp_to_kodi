@@ -65,26 +65,25 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      testOK: false,
-      newServer: {
-        id: null,
-        name: null,
-        protocol: 'http://',
-        host: null,
-        port: null,
-        username: null,
-        password: null
-      },
-      servers: []
-    };
-  },
-  mounted() {
-    const style = document.createElement('style');
-    style.textContent = `
+<script setup>
+
+import { ref, onMounted, computed } from 'vue'
+
+const servers = ref([]);
+const testOK = ref(false);
+const newServer = ref({
+  id: null,
+  name: null,
+  protocol: 'http://',
+  host: null,
+  port: null,
+  username: null,
+  password: null
+});
+
+onMounted(() => {
+  const style = document.createElement('style');
+  style.textContent = `
 
 table {
   width: 100%;
@@ -152,68 +151,71 @@ div#wrapper {
   background-color: #005a9e;
 }
       `;
-    document.head.appendChild(style);
-    browser.storage.local.get('servers').then(data => {
-      this.servers = data.servers ? JSON.parse(data.servers) : [];
-    });
-  },
-  computed: {
-    isTestButtonEnabled() {
-      const { name, host, port } = this.newServer;
-      return (
-        !!name &&
-        !!host &&
-        Number.isInteger(port) &&
-        port >= 1 &&
-        port <= 65535
-      );
-    },
-    isSaveButtonEnabled() {
-      return (this.isTestButtonEnabled && this.testOK);
-    }
-  },
-  methods: {
-    test() {
-      this.testOK = true;
-    },
-    save() {
-      if (!this.newServer.id) {
-        this.servers.push({
-          id: Date.now(),
-          name: this.newServer.name,
-          protocol: this.newServer.protocol,
-          host: this.newServer.host,
-          port: this.newServer.port,
-          username: this.newServer.username || null,
-          password: this.newServer.password || null
-        });
-      } else {
-        this.servers = this.servers.map((server) =>
-          server.id === this.newServer.id ? { ... this.newServer } : server
-        );
-      }
-      this.saveToStorage();
-      this.testOK = false;
-    },
-    saveToStorage() {
-      browser.storage.local.set({ servers: JSON.stringify(this.servers) });
-      this.newServer = {
-        id: null,
-        name: null,
-        protocol: 'http://',
-        host: null,
-        port: null,
-        username: null,
-        password: null
-      };
-    },
-    editServerAtIndex(index) {
-      this.newServer = { ...this.servers[index] };
-    },
-    removeServerAtIndex(index) {
-      this.servers.splice(index, 1);
-      this.saveToStorage();
-    }
-  }
+  document.head.appendChild(style);
+  browser.storage.local.get('servers').then(data => {
+    servers.value = data.servers ? JSON.parse(data.servers) : [];
+  });
+});
+
+const isTestButtonEnabled = computed(() => {
+  const { name, host, port } = newServer.value;
+  return (
+    !!name &&
+    !!host &&
+    Number.isInteger(port) &&
+    port >= 1 &&
+    port <= 65535
+  );
+});
+const isSaveButtonEnabled = computed(() => {
+
+  return (isTestButtonEnabled.value && testOK.value);
+});
+
+const test = () => {
+  testOK.value = true;
 };
+
+const save = () => {
+  if (!newServer.value.id) {
+    servers.value.push({
+      id: Date.now(),
+      name: newServer.value.name,
+      protocol: newServer.value.protocol,
+      host: newServer.value.host,
+      port: newServer.value.port,
+      username: newServer.value.username || null,
+      password: newServer.value.password || null
+    });
+  } else {
+    servers.value = servers.value.map((server) =>
+      server.id === newServer.value.id ? { ...newServer.value } : server
+    );
+  }
+  saveToStorage();
+  testOK.value = false;
+};
+
+const saveToStorage = () => {
+  browser.storage.local.set({ servers: JSON.stringify(servers.value) });
+  newServer.value = {
+    id: null,
+    name: null,
+    protocol: 'http://',
+    host: null,
+    port: null,
+    username: null,
+    password: null
+  };
+};
+
+const editServerAtIndex = (index) => {
+  newServer.value = { ...servers.value[index] };
+};
+
+const removeServerAtIndex = (index) => {
+  servers.value.splice(index, 1);
+  saveToStorage();
+};
+
 </script>
