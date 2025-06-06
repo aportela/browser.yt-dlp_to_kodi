@@ -42,7 +42,7 @@ const sendToServer = (server) => {
   browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
     const tab = tabs[0];
     // TODO: server protocol
-    const kodiUrl = `http://${server.host}:${server.port}/jsonrpc`;
+    const kodiUrl = `${server.protocol}${server.host}:${server.port}/jsonrpc`;
     const payload = {
       method: "Addons.ExecuteAddon",
       params: {
