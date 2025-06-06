@@ -11,6 +11,7 @@
     "type": "git",
     "url": "https://github.com/aportela/browser.yt-dlp_to_kodi"
   },
+  "license": "GPL-3.0-or-later",
   "scripts": {
     "dev": "vite",
     "build": "vite build"
