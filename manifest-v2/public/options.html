@@ -70,6 +70,27 @@
       background-color: grey;
     }
 
+    .rotate-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease;
+    }
+
+    .rotate-button span {
+      animation: rotate 2s linear infinite;
+      font-size: 1em;
+    }
+
+    @keyframes rotate {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
   </style>
 </head>
 
