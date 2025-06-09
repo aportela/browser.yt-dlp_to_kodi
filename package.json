@@ -1,7 +1,7 @@
 {
   "name": "browser.yt-dlp_to_kodi",
-  "version": "0.10.0",
-  "description": "Browser extension (manifest v2) for using yt-dlp_to_kodi addon",
+  "version": "0.11.0",
+  "description": "Browser extension (manifest v3) for using yt-dlp_to_kodi addon",
   "keywords": [
     "firefox",
     "kodi",
@@ -17,10 +17,10 @@
     "build": "vite build"
   },
   "dependencies": {
-    "vue": "^3.4.21"
+    "vue": "^3.5.16"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.4",
-    "vite": "^5.2.0"
+    "@vitejs/plugin-vue": "^5.2.4",
+    "vite": "^5.4.19"
   }
 }

@@ -1,2 +1,3 @@
 # browser.yt-dlp_to_kodi
-browser extension for video.yt-dlp_to_kodi kodi addon
+
+Browser extension (manifest v3) for using yt-dlp_to_kodi addon
