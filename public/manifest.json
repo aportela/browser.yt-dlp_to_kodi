@@ -15,5 +15,10 @@
     "48": "icon.png"
   },
   "permissions": ["tabs", "storage"],
-  "host_permissions": ["http://*/", "https://*/"]
+  "host_permissions": ["http://*/", "https://*/"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{41c7a24f-007f-5a7e-95f3-38ed2941dacd}"
+    }
+  }
 }
