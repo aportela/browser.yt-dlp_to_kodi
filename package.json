@@ -1,6 +1,6 @@
 {
   "name": "browser.yt-dlp_to_kodi",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Browser extension (manifest v3) for using yt-dlp_to_kodi addon",
   "keywords": [
     "firefox",
