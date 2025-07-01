@@ -9,8 +9,9 @@
     <div v-if="servers && servers.length > 0">
       <hr />
       <p v-for="(server, idx) in servers" :key="server.id">
-        <button type="button" @click="sendToServer(server)" :disabled="loading">▶️</button> <span>{{ server.name
-        }}</span>
+        <button type="button" @click="sendToServer(server, false)" :disabled="loading">▶️</button> <button type="button"
+          @click="sendToServer(server, true)" :disabled="loading">✚</button> <span>{{ server.name
+          }}</span>
       </p>
     </div>
   </div>
@@ -38,7 +39,7 @@ const openSettings = () => {
   }
 };
 
-const sendToServer = (server) => {
+const sendToServer = (server, append) => {
   browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
     const tab = tabs[0];
     // TODO: server protocol
@@ -48,7 +49,7 @@ const sendToServer = (server) => {
       params: {
         addonid: "plugin.video.yt-dlp_to_kodi",
         params: {
-          action: "process",
+          action: append ? "append" : "play",
           url: tab.url,
         },
       },
