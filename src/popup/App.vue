@@ -42,7 +42,7 @@ const openSettings = () => {
 const sendToServer = (server, append) => {
   browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
     const tab = tabs[0];
-    // TODO: server protocol
+    const encodedUrl = encodeURIComponent(tab.url);
     const kodiUrl = `${server.protocol}${server.host}:${server.port}/jsonrpc`;
     const payload = {
       method: "Addons.ExecuteAddon",
@@ -50,7 +50,7 @@ const sendToServer = (server, append) => {
         addonid: "plugin.video.yt-dlp_to_kodi",
         params: {
           action: append ? "append" : "play",
-          url: tab.url,
+          url: encodedUrl,
         },
       },
       id: 1,
