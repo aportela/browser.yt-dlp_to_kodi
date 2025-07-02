@@ -9,9 +9,8 @@
     <div v-if="servers && servers.length > 0">
       <hr />
       <p v-for="(server, idx) in servers" :key="server.id">
-        <button type="button" @click="sendToServer(server, false)" :disabled="loading">▶️</button> <button type="button"
-          @click="sendToServer(server, true)" :disabled="loading">✚</button> <span>{{ server.name
-          }}</span>
+        <button type="button" @click="sendToServer(server, false)" :disabled="loading">▶️</button> <span>{{ server.name
+        }}</span>
       </p>
     </div>
   </div>
@@ -49,7 +48,7 @@ const sendToServer = (server, append) => {
       params: {
         addonid: "plugin.video.yt-dlp_to_kodi",
         params: {
-          action: append ? "append" : "play",
+          action: "play",
           url: encodedUrl,
         },
       },
